@@ -1,5 +1,4 @@
 import React from "react"
-import store from "store"
 import Kilt from '@kiltprotocol/sdk-js'
 
 class CreateIdentity extends React.Component {
@@ -10,7 +9,7 @@ class CreateIdentity extends React.Component {
             mnemonic: Kilt.Identity.generateMnemonic()
         }
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleRandomise = this.handleRandomise.bind(this)
     }
 
     handleChange(event) {
@@ -24,29 +23,22 @@ class CreateIdentity extends React.Component {
         
     }
 
-    handleSubmit(event) {
-        event.preventDefault()
-        try{
-            Kilt.Identity.buildFromMnemonic(this.state.mnemonic)
-            store.set(this.state.name, this.state)
-        }catch(err){
-            alert("Invalid Mnemonic make sure it made up of 12 words")
-        }
-        store.each(function(value, key) {
-            console.log(key, '==', value)
-        })
-        
+    handleRandomise() {
+        document.getElementById("Mnemonic").value = Kilt.Identity.generateMnemonic()
     }
+    
 
     render(){
         
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={(event) => this.props.handleSubmit(event, this.state)}>
                 <h4>Name</h4>
                 <input id="Name" type="text" value={this.state.name} onChange={this.handleChange}/>
                 <h4>Seed</h4>
                 <textarea id="Mnemonic" cols={this.state.mnemonic.length + 2} 
                 rows="1" onChange={this.handleChange} value={this.state.mnemonic} />
+
+                <input type="button" value="Generate Random Seed" onClick={this.handleRandomise} />
                 <hr />
                 <input type="submit" />
 
