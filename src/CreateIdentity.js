@@ -31,16 +31,16 @@ class CreateIdentity extends React.Component {
     render(){
         
         return (
-            <form onSubmit={(event) => this.props.handleSubmit(event, this.state)}>
+            <form className="form-group" onSubmit={(event) => this.props.handleSubmit(event, this.state)}>
                 <h4>Name</h4>
                 <input id="Name" type="text" value={this.state.name} onChange={this.handleChange}/>
                 <h4>Seed</h4>
                 <textarea id="Mnemonic" cols={this.state.mnemonic.length + 2} 
                 rows="1" onChange={this.handleChange} value={this.state.mnemonic} />
 
-                <input type="button" value="Generate Random Seed" onClick={this.handleRandomise} />
-                <hr />
-                <input type="submit" />
+                <input className="btn btn-outline-secondary" type="button" value="Generate Random Seed" onClick={this.handleRandomise} />
+                
+                <input className="btn btn-outline-primary" type="submit" />
 
             </form>
         )

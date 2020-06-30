@@ -6,7 +6,7 @@ import store from "store"
 import Claimer from "./Claimer"
 
 class App extends React.Component {
-  constructor(){
+  constructor() {
     super()
 
     this.state = {
@@ -19,31 +19,31 @@ class App extends React.Component {
 
   handleCreate(event, identity) {
     event.preventDefault()
-    try{
-        Kilt.Identity.buildFromMnemonic(identity.mnemonic)
-        store.set(identity.name, identity)
-    }catch(err){
-        alert("Invalid Mnemonic make sure it made up of 12 words")
+    try {
+      Kilt.Identity.buildFromMnemonic(identity.mnemonic)
+      store.set(identity.name, identity)
+    } catch (err) {
+      alert("Invalid Mnemonic make sure it made up of 12 words")
     }
     this.setState(prevState => {
-      return{
-        ...prevState,
-        ids: this.getAllIds()
-      }
-    })
-  }
-  
-  handleRemove(key){
-    store.remove(key)
-    this.setState(prevState => {
-      return{
+      return {
         ...prevState,
         ids: this.getAllIds()
       }
     })
   }
 
-  getAllIds(){
+  handleRemove(key) {
+    store.remove(key)
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        ids: this.getAllIds()
+      }
+    })
+  }
+
+  getAllIds() {
     var listOfIds = []
     store.each((value, key) => {
       listOfIds.push(value)
@@ -51,11 +51,18 @@ class App extends React.Component {
     return listOfIds
   }
   render() {
-    const ids = this.state.ids.map(value => <Claimer key={value.name} id={value} handleRemove={this.handleRemove}/>)
+    const ids = this.state.ids.map(value => <Claimer key={value.name} id={value} handleRemove={this.handleRemove} />)
     return (
-      <div className="App">
-        <CreateIdentity handleSubmit={this.handleCreate}/>
-        {ids}
+      <div className="container">
+        <div className="row ">
+          <div className="col-xl-6 m-md">
+            <CreateIdentity handleSubmit={this.handleCreate} />
+            {ids}
+          </div>
+          <div className="col-xl-6 m-md">
+            
+          </div>
+        </div>
       </div>
     );
   }
