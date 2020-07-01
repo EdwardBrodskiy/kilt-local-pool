@@ -2,14 +2,16 @@ import React from 'react';
 import Kilt from '@kiltprotocol/sdk-js'
 import CreateIdentity from "./CreateIdentity"
 import store from "store"
-import Claimer from "./Claimer"
+import Identety from "./Identety"
 
-class Users extends React.Component {
-    constructor() {
-        super()
+class Identeties extends React.Component {
+    constructor(props) {
+        super(props)
+
         this.checkLocalData()
+
         this.state = {
-            ids: store.get("ids")
+            ids: store.get(this.props.storageLocation)
         }
 
         this.handleRemove = this.handleRemove.bind(this)
@@ -17,9 +19,9 @@ class Users extends React.Component {
     }
 
     checkLocalData() {
-        var ids = store.get("ids")
+        var ids = store.get(this.props.storageLocation)
         if (ids == null) {
-            store.set("ids", [])
+            store.set(this.props.storageLocation, [])
         }
     }
 
@@ -27,10 +29,10 @@ class Users extends React.Component {
         event.preventDefault()
         try {
             Kilt.Identity.buildFromMnemonic(identity.mnemonic)
-            var ids = store.get("ids")
+            var ids = store.get(this.props.storageLocation)
             
             ids.push(identity)
-            store.set("ids", ids)
+            store.set(this.props.storageLocation, ids)
 
 
         } catch (err) {
@@ -39,19 +41,19 @@ class Users extends React.Component {
         this.setState(prevState => {
             return {
                 ...prevState,
-                ids: store.get("ids")
+                ids: store.get(this.props.storageLocation)
             }
         })
     }
 
     handleRemove(key) {
-        var ids = store.get("ids")
+        var ids = store.get(this.props.storageLocation)
         ids.splice(key, 1)
-        store.set("ids", ids)
+        store.set(this.props.storageLocation, ids)
         this.setState(prevState => {
             return {
                 ...prevState,
-                ids: store.get("ids")
+                ids: store.get(this.props.storageLocation)
             }
         })
     }
@@ -59,12 +61,12 @@ class Users extends React.Component {
 
     render() {
         
-        const ids = this.state.ids.map((value, index) => <Claimer key={index} index={index} 
+        const ids = this.state.ids.map((value, index) => <Identety key={index} index={index} 
         item={value} handleRemove={this.handleRemove} handleSelect={() => this.props.changeSelected(index)}
         selected={this.props.selected === index}/>)
         return (
             <div>
-                <CreateIdentity handleSubmit={this.handleCreate} />
+                <CreateIdentity handleSubmit={this.handleCreate} id={this.props.id}/>
                 {ids}
             </div>
         );
@@ -72,4 +74,4 @@ class Users extends React.Component {
 
 }
 
-export default Users;
+export default Identeties;

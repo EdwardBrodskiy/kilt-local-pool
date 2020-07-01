@@ -1,13 +1,15 @@
 import React from "react"
 import Kilt from '@kiltprotocol/sdk-js'
 
-class Claimer extends React.Component { 
+class Identety extends React.Component { 
     render(){
 
         return(
-        <div className="Claimer media content-section ">
+        <div className="media content-section ">
             <div className="media-body">
-                <h2 className="mt-0">{this.props.item.name}</h2>
+                <h2 className="mt-0">
+                    {this.props.item.name}  {this.props.selected && <span className="badge badge-success ">Selected</span>}
+                </h2>
                 <p>{this.props.item.mnemonic}</p>
                 
                 {this.props.selected && <p>{Kilt.Identity.buildFromMnemonic(this.props.item.mnemonic).address}</p>}
@@ -29,4 +31,4 @@ class Claimer extends React.Component {
     }
 }
 
-export default Claimer
+export default Identety

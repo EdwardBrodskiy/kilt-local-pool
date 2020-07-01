@@ -1,20 +1,28 @@
 import React from 'react';
 import './App.css';
 import Claims from "./data/Claims"
-import Users from "./ids/Users"
+import Identeties from "./ids/Identeties"
 
 class App extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      selectedClaimer: 0
+      selectedClaimer: 0,
+      selectedAttester: 0
     }
 
-    this.changeSelected = this.changeSelected.bind(this)
+    this.storage = {
+      users: "user-ids",
+      claims: "claims",
+      attesters: "atterster-ids"
+    }
+
+    this.changeSelectedClaimer = this.changeSelectedClaimer.bind(this)
+    this.changeSelectedAttester = this.changeSelectedAttester.bind(this)
   }
 
-  changeSelected(key) {
+  changeSelectedClaimer(key) {
     this.setState(prevState => {
       return {
         ...prevState,
@@ -23,16 +31,30 @@ class App extends React.Component {
     })
   }
 
+  changeSelectedAttester(key) {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        selectedAttester: key
+      }
+    })
+  }
+
   render() {
 
     return (
-      <div className="container">
+      <div className="container-fluid">
         <div className="row ">
-          <div className="col-xl-6 m-md">
-            <Users selected={this.state.selectedClaimer} changeSelected={this.changeSelected} storageLocation="ids" />
+          <div className="col-xl-4 m-md">
+            <Identeties id="Claimers" selected={this.state.selectedClaimer} 
+            changeSelected={this.changeSelectedClaimer} storageLocation={this.storage.users} />
           </div>
-          <div className="col-xl-6 m-md">
-            <Claims selected={this.state.selectedClaimer} />
+          <div className="col-xl-4 m-md">
+            <Claims selected={this.state.selectedClaimer} storage={this.storage} />
+          </div>
+          <div className="col-xl-4 m-md">
+            <Identeties id="Attesters" selected={this.state.selectedAttester} 
+            changeSelected={this.changeSelectedAttester} storageLocation={this.storage.attesters} />
           </div>
         </div>
       </div>
