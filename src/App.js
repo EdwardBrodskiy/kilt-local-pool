@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import CreateClaim from "./data/CreateClaim"
+import Claims from "./data/Claims"
 import Users from "./ids/Users"
 
 class App extends React.Component {
@@ -29,10 +29,10 @@ class App extends React.Component {
       <div className="container">
         <div className="row ">
           <div className="col-xl-6 m-md">
-            <Users selected={this.state.selectedClaimer} changeSelected={this.changeSelected} />
+            <Users selected={this.state.selectedClaimer} changeSelected={this.changeSelected} storageLocation="ids" />
           </div>
           <div className="col-xl-6 m-md">
-            <CreateClaim />
+            <Claims selected={this.state.selectedClaimer} />
           </div>
         </div>
       </div>
