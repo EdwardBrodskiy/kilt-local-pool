@@ -66,6 +66,7 @@ class Identeties extends React.Component {
         selected={this.props.selected === index}/>)
         return (
             <div>
+                <h1 className="head">{this.props.id}</h1>
                 <CreateIdentity handleSubmit={this.handleCreate} id={this.props.id}/>
                 {ids}
             </div>

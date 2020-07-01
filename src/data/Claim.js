@@ -1,35 +1,42 @@
 import React from "react"
 
 
-class Claim extends React.Component { 
-    render(){
+class Claim extends React.Component {
+    render() {
         var contents = null
-        if(this.props.item.attestation){
+        if (this.props.item.attestation) {
             contents = this.props.item.request.claim.contents
-        }else{
+        } else {
             contents = this.props.item.claim.contents
         }
+        var descriptions = []
+        for (const [key, value] of Object.entries(contents)){
+            descriptions.push(<li key={key} className="list-group-item"><b>{key} -</b> {value}</li>)
+        }
+            
         return(
-        <div className="media content-section ">
+            <div className = "media content-section " >
             <div className="media-body">
-                {this.props.item.attestation ? <span className="badge badge-success ">Attested</span>:
-                <span className="badge badge-warning ">Not Attested</span>}
-                <h2 className="mt-0">{contents.name}</h2>
-                <p>{contents.age}</p>
+                <form className="float-right btn-group" >
+                    {!this.props.item.attestation && <input className="btn btn-outline-secondary" type="button" value="Attest"
+                        onClick={() => this.props.handleAttest(this.props.index, this.props.item)} />}
+
+                    <input className="btn btn-outline-danger" type="button" value="Remove"
+                        onClick={() => this.props.handleRemove(this.props.index)} />
+                </form>
+
+                {this.props.item.attestation ? <span className="badge badge-success ">Attested</span> :
+                    <span className="badge badge-warning ">Not Attested</span>}
+
+                <ul className="list-group">
+                    {descriptions}
+                </ul>
+
             </div>
-           
-            <form className="float-right" >
 
-                {!this.props.item.attestation && <input className="btn btn-outline-secondary" type="button" value="Attest" 
-                onClick={() => this.props.handleAttest(this.props.index, this.props.item)}/>}
 
-                <input className="btn btn-outline-danger" type="button" value="Remove" 
-                onClick={() => this.props.handleRemove(this.props.index)}/>
-                
-            
-            </form>
-            
-        </div>
+
+            </div>
         )
     }
 }

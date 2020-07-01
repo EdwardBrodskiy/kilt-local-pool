@@ -78,7 +78,6 @@ class Claims extends React.Component {
     handleAttest(index, data) {
         const attesterMnemonic = store.get(this.props.storage.attesters)[this.props.selected.selectedAttester].mnemonic
 
-        // console.log(attesterMnemonic)
 
         const attester = Kilt.Identity.buildFromMnemonic(attesterMnemonic)
 
@@ -107,9 +106,7 @@ class Claims extends React.Component {
         Kilt.connect('wss://full-nodes.kilt.io:9944')
 
         // store the attestation on chain
-        attestation.store(attester).then(data => {
-            console.log('attestation: ', attestation)
-        }).then(() => {
+        attestation.store(attester).then(() => {
             // the attestation was successfully stored on the chain, so you can now create the AttestedClaim object
             const attestedClaim = Kilt.AttestedClaim.fromRequestAndAttestation(
                 requestForAttestation,
@@ -134,12 +131,12 @@ class Claims extends React.Component {
     }
 
     render() {
-        console.log(this.state.claims)
         const claims = this.state.claims.map((claim, index) => <Claim key={index} index={index}
             item={claim} handleRemove={this.handleRemove} handleAttest={this.handleAttest}
             selected={this.props.selected === index} />)
         return (
             <div>
+                <h1>Personal Data</h1>
                 <CreateClaim handleSubmit={this.handleCreate} />
                 {claims}
             </div>

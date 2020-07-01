@@ -45,14 +45,15 @@ class App extends React.Component {
     return (
       <div className="container-fluid">
         <div className="row ">
-          <div className="col-xl-4 m-md">
+          <div className="col-xl-2 m-md">
+            <Claims selected={this.state} storage={this.storage} />
+          </div>
+          <div className="col-xl-5 m-md">
             <Identeties id="Claimers" selected={this.state.selectedClaimer} 
             changeSelected={this.changeSelectedClaimer} storageLocation={this.storage.users} />
           </div>
-          <div className="col-xl-4 m-md">
-            <Claims selected={this.state} storage={this.storage} />
-          </div>
-          <div className="col-xl-4 m-md">
+          
+          <div className="col-xl-5 m-md">
             <Identeties id="Attesters" selected={this.state.selectedAttester} 
             changeSelected={this.changeSelectedAttester} storageLocation={this.storage.attesters} />
           </div>
