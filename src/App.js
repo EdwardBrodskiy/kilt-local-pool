@@ -50,7 +50,7 @@ class App extends React.Component {
             changeSelected={this.changeSelectedClaimer} storageLocation={this.storage.users} />
           </div>
           <div className="col-xl-4 m-md">
-            <Claims selected={this.state.selectedClaimer} storage={this.storage} />
+            <Claims selected={this.state} storage={this.storage} />
           </div>
           <div className="col-xl-4 m-md">
             <Identeties id="Attesters" selected={this.state.selectedAttester} 
