@@ -3,6 +3,7 @@ import Kilt from '@kiltprotocol/sdk-js'
 import store from "store"
 import CreateClaim from "./CreateClaim"
 import Claim from "./Claim"
+import Verifier from "../Verifier"
 
 
 class Claims extends React.Component {
@@ -15,9 +16,13 @@ class Claims extends React.Component {
             claims: store.get(this.props.storage.claims)
         }
 
+        this.currentClaimForVerification = 0
+
         this.handleRemove = this.handleRemove.bind(this)
         this.handleCreate = this.handleCreate.bind(this)
         this.handleAttest = this.handleAttest.bind(this)
+        this.handleValidationRequest = this.handleValidationRequest.bind(this)
+        this.handleNonceSigning = this.handleNonceSigning.bind(this)
     }
 
     checkLocalData() {
@@ -130,10 +135,51 @@ class Claims extends React.Component {
 
     }
 
+    handleValidationRequest(key) {
+        this.currentClaimForVerification = key
+        const result = Verifier.sendForVerification(this.handleNonceSigning)
+        switch(result){
+            case Verifier.SUCCESS:
+                alert("Claim Accepted by Verifier")
+                break
+            case Verifier.CLAIMER_NOT_OWNER:
+                alert("Claim does not belong to Claimer")
+                break
+            case Verifier.CLAIM_INVALID:
+                alert("Claim denied by Verifier")
+                break
+            case Verifier.NOT_ACCEPTED_CLAIM_FORMAT:
+                alert("Invalid Claim check if it is attested")
+                break
+            default:
+                alert("Unkown result")
+        }
+    }
+
+    handleNonceSigning(nonce) {
+        const claimerMnemonic = store.get(this.props.storage.users)[this.props.selected.selectedClaimer].mnemonic
+        
+
+        const claimer = Kilt.Identity.buildFromMnemonic(claimerMnemonic)
+        // sign the nonce as the claimer with your private identity
+        const signedNonce = claimer.signStr(nonce)
+
+        // same data as in to the simple "Verification" step
+        const attestedClaimStruct = this.state.claims[this.currentClaimForVerification]
+
+        const dataToVerify = {
+            signedNonce,
+            attestedClaimStruct
+        }
+
+        return dataToVerify
+    }
+
     render() {
         const claims = this.state.claims.map((claim, index) => <Claim key={index} index={index}
             item={claim} handleRemove={this.handleRemove} handleAttest={this.handleAttest}
-            selected={this.props.selected === index} />)
+            handleValidationRequest={() => this.handleValidationRequest(index)}
+             />)
         return (
             <div>
                 <h1>Personal Data</h1>
