@@ -24,7 +24,13 @@ class CreateIdentity extends React.Component {
     }
 
     handleRandomise() {
-        document.getElementById("Mnemonic").value = Kilt.Identity.generateMnemonic()
+        this.setState(prevState => {
+            return{
+            ...prevState,
+            mnemonic:  Kilt.Identity.generateMnemonic()
+            }
+        })
+        
     }
     
 

@@ -1,66 +1,38 @@
 import React from 'react';
-import Kilt from '@kiltprotocol/sdk-js'
 import './App.css';
-import CreateIdentity from "./CreateIdentity"
-import store from "store"
-import Claimer from "./Claimer"
+import CreateClaim from "./data/CreateClaim"
+import Users from "./ids/Users"
 
 class App extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.state = {
-      ids: this.getAllIds()
+      selectedClaimer: 0
     }
 
-    this.handleRemove = this.handleRemove.bind(this)
-    this.handleCreate = this.handleCreate.bind(this)
+    this.changeSelected = this.changeSelected.bind(this)
   }
 
-  handleCreate(event, identity) {
-    event.preventDefault()
-    try {
-      Kilt.Identity.buildFromMnemonic(identity.mnemonic)
-      store.set(identity.name, identity)
-    } catch (err) {
-      alert("Invalid Mnemonic make sure it made up of 12 words")
-    }
+  changeSelected(key) {
     this.setState(prevState => {
       return {
         ...prevState,
-        ids: this.getAllIds()
+        selectedClaimer: key
       }
     })
   }
 
-  handleRemove(key) {
-    store.remove(key)
-    this.setState(prevState => {
-      return {
-        ...prevState,
-        ids: this.getAllIds()
-      }
-    })
-  }
-
-  getAllIds() {
-    var listOfIds = []
-    store.each((value, key) => {
-      listOfIds.push(value)
-    })
-    return listOfIds
-  }
   render() {
-    const ids = this.state.ids.map(value => <Claimer key={value.name} id={value} handleRemove={this.handleRemove} />)
+
     return (
       <div className="container">
         <div className="row ">
           <div className="col-xl-6 m-md">
-            <CreateIdentity handleSubmit={this.handleCreate} />
-            {ids}
+            <Users selected={this.state.selectedClaimer} changeSelected={this.changeSelected} />
           </div>
           <div className="col-xl-6 m-md">
-            
+            <CreateClaim />
           </div>
         </div>
       </div>
