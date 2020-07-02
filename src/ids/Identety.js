@@ -13,7 +13,7 @@ class Identety extends React.Component {
     }
 
 
-    handleTokenRequest() {
+    handleTokenRequest() { // send to Faucet page to get tokens
         this.setState(prevState => {
             return {
                 ...prevState,
@@ -48,14 +48,18 @@ class Identety extends React.Component {
                     <h2 className="mt-0">
                         {this.props.item.name}  {this.props.selected && <span className="badge badge-success ">Selected</span>}
                     </h2>
+                    <ul className="list-group">
+                        <li className="list-group-item"><b>Mnemonic - </b>{this.props.item.mnemonic}</li>
 
-                    <p>{this.props.item.mnemonic}</p>
+                        {this.props.selected && <li className="list-group-item">
+                            <b>Address - </b>{Kilt.Identity.buildFromMnemonic(this.props.item.mnemonic).address}
+                        </li>}
 
-                    {this.props.selected && <p>{Kilt.Identity.buildFromMnemonic(this.props.item.mnemonic).address}</p>}
-
-                    {(this.props.item.did && this.props.selected) && 
-                    <pre ><small>DID {JSON.stringify(this.props.item.did, null, 2)}</small></pre>}
-
+                        {(this.props.item.did && this.props.selected) &&
+                            <li className="list-group-item">
+                                <b>DID - </b><pre ><small>{JSON.stringify(this.props.item.did, null, 2)}</small></pre>
+                            </li>}
+                    </ul>
 
                 </div>
 

@@ -31,7 +31,7 @@ class Identeties extends React.Component {
         try {
             Kilt.Identity.buildFromMnemonic(identity.mnemonic)
             var ids = store.get(this.props.storageLocation)
-            
+
             ids.push(identity)
             store.set(this.props.storageLocation, ids)
 
@@ -47,9 +47,9 @@ class Identeties extends React.Component {
         })
     }
 
-    handleRemove(key) { 
+    handleRemove(key) {
         var ids = store.get(this.props.storageLocation)
-        ids.splice(key, 1) 
+        ids.splice(key, 1)
         store.set(this.props.storageLocation, ids)
         this.setState(prevState => {
             return {
@@ -59,7 +59,7 @@ class Identeties extends React.Component {
         })
     }
 
-    handleCreateDid(key){
+    handleCreateDid(key) {
         // setup Claimer
         const mnemonic = this.state.ids[key].mnemonic
 
@@ -88,15 +88,15 @@ class Identeties extends React.Component {
 
 
     render() {
-        
-        const ids = this.state.ids.map((value, index) => <Identety key={index} 
-        item={value} handleRemove={() => this.handleRemove(index)} 
-        handleSelect={() => this.props.changeSelected(index)} selected={this.props.selected === index} 
-        did={this.props.did} handleCreateDid={() => this.handleCreateDid(index)}/>)
+
+        const ids = this.state.ids.map((value, index) => <Identety key={index}
+            item={value} handleRemove={() => this.handleRemove(index)}
+            handleSelect={() => this.props.changeSelected(index)} selected={this.props.selected === index}
+            did={this.props.did} handleCreateDid={() => this.handleCreateDid(index)} />)
         return (
             <div>
                 <h1 className="head">{this.props.id}</h1>
-                <CreateIdentity handleSubmit={this.handleCreate} id={this.props.id}/>
+                <CreateIdentity handleSubmit={this.handleCreate} id={this.props.id} />
                 {ids}
             </div>
         );

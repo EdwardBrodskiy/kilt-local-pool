@@ -11,12 +11,12 @@ class Claims extends React.Component {
         super(props)
 
         this.checkLocalData()
-        
+
         this.state = {
             claims: store.get(this.props.storage.claims)
         }
 
-        this.currentClaimForVerification = 0
+        this.currentClaimForVerification = -1 // the current Claim we are waiting for a sign request on
 
         this.handleRemove = this.handleRemove.bind(this)
         this.handleCreate = this.handleCreate.bind(this)
@@ -25,41 +25,41 @@ class Claims extends React.Component {
         this.handleNonceSigning = this.handleNonceSigning.bind(this)
     }
 
-    checkLocalData() {
+    checkLocalData() { // check the list exists create it if not
         var claims = store.get(this.props.storage.claims)
         if (claims == null) {
             store.set(this.props.storage.claims, [])
         }
     }
 
-    handleCreate(event, data) {
+    handleCreate(event, data) { // create new Claim
         event.preventDefault()
 
-        const ctype = require('./ctype.json')
-
+        const ctype = require('./ctype.json') // load ctype
+        // setup claimer 
         var userMnemonic = null
-        try{
+        try {
             userMnemonic = store.get(this.props.storage.users)[this.props.selected.selectedClaimer].mnemonic
-        }catch{
+        } catch{
             alert("No Claimer exists")
             return
         }
-        
-        const claimer = Kilt.Identity.buildFromMnemonic(userMnemonic)
 
+        const claimer = Kilt.Identity.buildFromMnemonic(userMnemonic)
+        // create the claim
         const claim = Kilt.Claim.fromCTypeAndClaimContents(
             ctype,
             data,
             claimer.address,
             null
         );
-
+        // format for attestation request
         const requestForAttestation = Kilt.RequestForAttestation.fromClaimAndIdentity(
             claim,
             claimer,
             []
         );
-
+        // save claim localy
         var claims = store.get(this.props.storage.claims)
 
         claims.push(requestForAttestation)
@@ -74,9 +74,9 @@ class Claims extends React.Component {
         })
     }
 
-    handleRemove(key) {
+    handleRemove(index) { // removes the claim at a give index
         var claims = store.get(this.props.storage.claims)
-        claims.splice(key, 1)
+        claims.splice(index, 1)
         store.set(this.props.storage.claims, claims)
         this.setState(prevState => {
             return {
@@ -86,16 +86,15 @@ class Claims extends React.Component {
         })
     }
 
-    handleAttest(index, data) {
+    handleAttest(index, data) { // attest the claim with selected attestor
+        // setup attester
         var attesterMnemonic = null
-        try{
+        try {
             attesterMnemonic = store.get(this.props.storage.attesters)[this.props.selected.selectedAttester].mnemonic
-        }catch(e){
+        } catch (e) {
             alert("No Attester exist")
             return
         }
-       
-
 
         const attester = Kilt.Identity.buildFromMnemonic(attesterMnemonic)
 
@@ -119,17 +118,18 @@ class Claims extends React.Component {
             attester.getPublicIdentity()
         );
 
-        // connect to the chain (this is one KILT test node)
-        
+        // store on block chain
+
         Kilt.connect('wss://full-nodes.kilt.io:9944')
 
-        // store the attestation on chain
+
         attestation.store(attester).then(() => {
-            // the attestation was successfully stored on the chain, so you can now create the AttestedClaim object
+            // create the attestedclaim
             const attestedClaim = Kilt.AttestedClaim.fromRequestAndAttestation(
                 requestForAttestation,
                 attestation
             );
+            // store it localy
             var claims = store.get(this.props.storage.claims)
             claims[index] = attestedClaim
             store.set(this.props.storage.claims, claims)
@@ -148,10 +148,10 @@ class Claims extends React.Component {
 
     }
 
-    handleValidationRequest(key) {
-        this.currentClaimForVerification = key
+    handleValidationRequest(index) { // send request for verification and give feedback on result
+        this.currentClaimForVerification = index // store index of claim in question
         const result = Verifier.sendForVerification(this.handleNonceSigning)
-        switch(result){
+        switch (result) {
             case Verifier.SUCCESS:
                 alert("Claim Accepted by Verifier")
                 break
@@ -169,15 +169,15 @@ class Claims extends React.Component {
         }
     }
 
-    handleNonceSigning(nonce) {
+    handleNonceSigning(nonce) { // sign the nonce and send of the data to be verified
+        // setup claimer
         const claimerMnemonic = store.get(this.props.storage.users)[this.props.selected.selectedClaimer].mnemonic
-        
 
         const claimer = Kilt.Identity.buildFromMnemonic(claimerMnemonic)
         // sign the nonce as the claimer with your private identity
         const signedNonce = claimer.signStr(nonce)
 
-        // same data as in to the simple "Verification" step
+        // load the Claim and send them off
         const attestedClaimStruct = this.state.claims[this.currentClaimForVerification]
 
         const dataToVerify = {
@@ -192,7 +192,7 @@ class Claims extends React.Component {
         const claims = this.state.claims.map((claim, index) => <Claim key={index} index={index}
             item={claim} handleRemove={this.handleRemove} handleAttest={this.handleAttest}
             handleValidationRequest={() => this.handleValidationRequest(index)}
-             />)
+        />)
         return (
             <div>
                 <h1>Personal Data</h1>

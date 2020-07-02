@@ -10,7 +10,7 @@ class CreateClaim extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(event) {
+    handleChange(event) { // update the state based on the change
         this.setState(prevState => {
             return {
                 ...prevState,
@@ -20,9 +20,6 @@ class CreateClaim extends React.Component {
         })
 
     }
-
-
-
 
     render() {
 
