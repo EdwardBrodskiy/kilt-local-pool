@@ -11,7 +11,7 @@ class App extends React.Component {
       selectedClaimer: 0,
       selectedAttester: 0
     }
-
+    // under what names data is stored localy
     this.storage = {
       users: "user-ids",
       claims: "claims",

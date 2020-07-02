@@ -16,18 +16,17 @@ class Identeties extends React.Component {
 
         this.handleRemove = this.handleRemove.bind(this)
         this.handleCreate = this.handleCreate.bind(this)
-
         this.handleCreateDid = this.handleCreateDid.bind(this)
     }
 
-    checkLocalData() {
+    checkLocalData() { // check the list exists create it if not
         var ids = store.get(this.props.storageLocation)
         if (ids == null) {
             store.set(this.props.storageLocation, [])
         }
     }
 
-    handleCreate(event, identity) {
+    handleCreate(event, identity) { // create a new Identety
         event.preventDefault()
         try {
             Kilt.Identity.buildFromMnemonic(identity.mnemonic)
@@ -48,9 +47,9 @@ class Identeties extends React.Component {
         })
     }
 
-    handleRemove(key) {
+    handleRemove(key) { 
         var ids = store.get(this.props.storageLocation)
-        ids.splice(key, 1)
+        ids.splice(key, 1) 
         store.set(this.props.storageLocation, ids)
         this.setState(prevState => {
             return {
@@ -61,19 +60,16 @@ class Identeties extends React.Component {
     }
 
     handleCreateDid(key){
+        // setup Claimer
         const mnemonic = this.state.ids[key].mnemonic
 
         const identity = Kilt.Identity.buildFromMnemonic(mnemonic)
-
+        // create did object
         const did = Kilt.Did.fromIdentity(identity)
-
+        // store did object 
         var ids = store.get(this.props.storageLocation)
-        console.log(key)
-        console.log(ids[key])
         ids[key]["did"] = did.createDefaultDidDocument()
         store.set(this.props.storageLocation, ids)
-
-        did.store(identity)
 
         this.setState(prevState => {
             return {
@@ -81,6 +77,13 @@ class Identeties extends React.Component {
                 ids: store.get(this.props.storageLocation)
             }
         })
+        // add to blockchain
+        Kilt.connect('wss://full-nodes.kilt.io:9944')
+
+        did.store(identity)
+
+        Kilt.disconnect('wss://full-nodes.kilt.io:9944')
+
     }
 
 
