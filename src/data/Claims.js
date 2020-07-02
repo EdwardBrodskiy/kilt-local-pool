@@ -37,8 +37,14 @@ class Claims extends React.Component {
 
         const ctype = require('./ctype.json')
 
-        const userMnemonic = store.get(this.props.storage.users)[this.props.selected.selectedClaimer].mnemonic
-
+        var userMnemonic = null
+        try{
+            userMnemonic = store.get(this.props.storage.users)[this.props.selected.selectedClaimer].mnemonic
+        }catch{
+            alert("No Claimer exists")
+            return
+        }
+        
         const claimer = Kilt.Identity.buildFromMnemonic(userMnemonic)
 
         const claim = Kilt.Claim.fromCTypeAndClaimContents(
@@ -81,7 +87,14 @@ class Claims extends React.Component {
     }
 
     handleAttest(index, data) {
-        const attesterMnemonic = store.get(this.props.storage.attesters)[this.props.selected.selectedAttester].mnemonic
+        var attesterMnemonic = null
+        try{
+            attesterMnemonic = store.get(this.props.storage.attesters)[this.props.selected.selectedAttester].mnemonic
+        }catch(e){
+            alert("No Attester exist")
+            return
+        }
+       
 
 
         const attester = Kilt.Identity.buildFromMnemonic(attesterMnemonic)
