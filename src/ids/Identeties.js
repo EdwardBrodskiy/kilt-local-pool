@@ -17,6 +17,7 @@ class Identeties extends React.Component {
         this.handleRemove = this.handleRemove.bind(this)
         this.handleCreate = this.handleCreate.bind(this)
         this.handleCreateDid = this.handleCreateDid.bind(this)
+        this.handleRemoveDid = this.handleRemoveDid.bind(this)
     }
 
     checkLocalData() { // check the list exists create it if not
@@ -59,30 +60,62 @@ class Identeties extends React.Component {
         })
     }
 
-    handleCreateDid(key) {
+    handleCreateDid(index) {
         // setup Claimer
-        const mnemonic = this.state.ids[key].mnemonic
+        const mnemonic = this.state.ids[index].mnemonic
 
         const identity = Kilt.Identity.buildFromMnemonic(mnemonic)
         // create did object
         const did = Kilt.Did.fromIdentity(identity)
-        // store did object 
-        var ids = store.get(this.props.storageLocation)
-        ids[key]["did"] = did.createDefaultDidDocument()
-        store.set(this.props.storageLocation, ids)
 
-        this.setState(prevState => {
-            return {
-                ...prevState,
-                ids: store.get(this.props.storageLocation)
-            }
-        })
         // add to blockchain
         Kilt.connect('wss://full-nodes.kilt.io:9944')
+        try {
+            did.store(identity)
+            // store did object 
+            var ids = store.get(this.props.storageLocation)
+            ids[index]["did"] = did.createDefaultDidDocument()
+            store.set(this.props.storageLocation, ids)
 
-        did.store(identity)
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    ids: store.get(this.props.storageLocation)
+                }
+            })
+        } catch (e) {
+            alert(e)
+        } finally {
+            Kilt.disconnect('wss://full-nodes.kilt.io:9944')
+        }
+    }
 
-        Kilt.disconnect('wss://full-nodes.kilt.io:9944')
+    handleRemoveDid(index) {
+        // setup Claimer
+        const mnemonic = this.state.ids[index].mnemonic
+
+        const identity = Kilt.Identity.buildFromMnemonic(mnemonic)
+
+        // remove from blockchain
+        Kilt.connect('wss://full-nodes.kilt.io:9944')
+        try {
+            Kilt.Did.remove(identity)
+            // remove did object 
+            var ids = store.get(this.props.storageLocation)
+            delete ids[index]["did"]
+            store.set(this.props.storageLocation, ids)
+
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    ids: store.get(this.props.storageLocation)
+                }
+            })
+        } catch (e) {
+            alert(e)
+        } finally {
+            Kilt.disconnect('wss://full-nodes.kilt.io:9944')
+        }
 
     }
 
@@ -92,7 +125,8 @@ class Identeties extends React.Component {
         const ids = this.state.ids.map((value, index) => <Identety key={index}
             item={value} handleRemove={() => this.handleRemove(index)}
             handleSelect={() => this.props.changeSelected(index)} selected={this.props.selected === index}
-            did={this.props.did} handleCreateDid={() => this.handleCreateDid(index)} />)
+            did={this.props.did} handleCreateDid={() => this.handleCreateDid(index)}
+            handleRemoveDid={() => this.handleRemoveDid(index)} />)
         return (
             <div>
                 <h1 className="head">{this.props.id}</h1>

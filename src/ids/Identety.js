@@ -41,6 +41,10 @@ class Identety extends React.Component {
                             <input className="btn btn-outline-info" type="button" value="Create DID"
                                 onClick={this.props.handleCreateDid} />}
 
+                        {(this.props.item.did) &&
+                            <input className="btn btn-outline-danger" type="button" value="Remove DID"
+                                onClick={this.props.handleRemoveDid} />}
+
                         <input className="btn btn-outline-danger" type="button" value="Remove"
                             onClick={this.props.handleRemove} />
                     </form>
