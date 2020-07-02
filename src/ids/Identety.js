@@ -37,17 +37,24 @@ class Identety extends React.Component {
                         {!this.state.requestedTokens && <input className="btn btn-outline-primary" type="button" value="Request Tokens"
                             onClick={this.handleTokenRequest} />}
 
+                        {(this.props.did && !this.props.item.did) &&
+                            <input className="btn btn-outline-info" type="button" value="Create DID"
+                                onClick={this.props.handleCreateDid} />}
+
                         <input className="btn btn-outline-danger" type="button" value="Remove"
-                            onClick={() => this.props.handleRemove(this.props.index)} />
+                            onClick={this.props.handleRemove} />
                     </form>
 
                     <h2 className="mt-0">
                         {this.props.item.name}  {this.props.selected && <span className="badge badge-success ">Selected</span>}
                     </h2>
-                    
+
                     <p>{this.props.item.mnemonic}</p>
 
                     {this.props.selected && <p>{Kilt.Identity.buildFromMnemonic(this.props.item.mnemonic).address}</p>}
+
+                    {(this.props.item.did && this.props.selected) && 
+                    <pre ><small>DID {JSON.stringify(this.props.item.did, null, 2)}</small></pre>}
 
 
                 </div>

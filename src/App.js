@@ -49,13 +49,14 @@ class App extends React.Component {
             <Claims selected={this.state} storage={this.storage} />
           </div>
           <div className="col-xl-5 m-md">
-            <Identeties id="Claimers" selected={this.state.selectedClaimer} 
-            changeSelected={this.changeSelectedClaimer} storageLocation={this.storage.users} />
+            <Identeties id="Claimers" selected={this.state.selectedClaimer}
+              changeSelected={this.changeSelectedClaimer} storageLocation={this.storage.users}
+              did={true} />
           </div>
-          
+
           <div className="col-xl-5 m-md">
-            <Identeties id="Attesters" selected={this.state.selectedAttester} 
-            changeSelected={this.changeSelectedAttester} storageLocation={this.storage.attesters} />
+            <Identeties id="Attesters" selected={this.state.selectedAttester}
+              changeSelected={this.changeSelectedAttester} storageLocation={this.storage.attesters} />
           </div>
         </div>
       </div>

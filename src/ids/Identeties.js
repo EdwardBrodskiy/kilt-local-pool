@@ -16,6 +16,8 @@ class Identeties extends React.Component {
 
         this.handleRemove = this.handleRemove.bind(this)
         this.handleCreate = this.handleCreate.bind(this)
+
+        this.handleCreateDid = this.handleCreateDid.bind(this)
     }
 
     checkLocalData() {
@@ -58,12 +60,36 @@ class Identeties extends React.Component {
         })
     }
 
+    handleCreateDid(key){
+        const mnemonic = this.state.ids[key].mnemonic
+
+        const identity = Kilt.Identity.buildFromMnemonic(mnemonic)
+
+        const did = Kilt.Did.fromIdentity(identity)
+
+        var ids = store.get(this.props.storageLocation)
+        console.log(key)
+        console.log(ids[key])
+        ids[key]["did"] = did.createDefaultDidDocument()
+        store.set(this.props.storageLocation, ids)
+
+        did.store(identity)
+
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                ids: store.get(this.props.storageLocation)
+            }
+        })
+    }
+
 
     render() {
         
-        const ids = this.state.ids.map((value, index) => <Identety key={index} index={index} 
-        item={value} handleRemove={this.handleRemove} handleSelect={() => this.props.changeSelected(index)}
-        selected={this.props.selected === index}/>)
+        const ids = this.state.ids.map((value, index) => <Identety key={index} 
+        item={value} handleRemove={() => this.handleRemove(index)} 
+        handleSelect={() => this.props.changeSelected(index)} selected={this.props.selected === index} 
+        did={this.props.did} handleCreateDid={() => this.handleCreateDid(index)}/>)
         return (
             <div>
                 <h1 className="head">{this.props.id}</h1>
