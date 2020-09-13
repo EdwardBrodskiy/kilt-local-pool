@@ -21,7 +21,7 @@ class Claims extends React.Component {
         this.handleRemove = this.handleRemove.bind(this)
         this.handleCreate = this.handleCreate.bind(this)
         this.handleAttest = this.handleAttest.bind(this)
-        this.handleValidationRequest = this.handleValidationRequest.bind(this)
+        this.handleValidationRequest = this.handlererVerificationRequest.bind(this)
         this.handleNonceSigning = this.handleNonceSigning.bind(this)
     }
 
@@ -74,7 +74,7 @@ class Claims extends React.Component {
         })
     }
 
-    handleRemove(index) { // removes the claim at a give index
+    handleRemove(index) { // removes the claim at a given index
         var claims = store.get(this.props.storage.claims)
         claims.splice(index, 1)
         store.set(this.props.storage.claims, claims)
@@ -148,7 +148,7 @@ class Claims extends React.Component {
 
     }
 
-    handleValidationRequest(index) { // send request for verification and give feedback on result
+    handlererVerificationRequest(index) { // send request for verification and give feedback on result
         this.currentClaimForVerification = index // store index of claim in question
         const result = Verifier.sendForVerification(this.handleNonceSigning)
         switch (result) {
@@ -169,7 +169,7 @@ class Claims extends React.Component {
         }
     }
 
-    handleNonceSigning(nonce) { // sign the nonce and send of the data to be verified
+    handleNonceSigning(nonce) { // sign the nonce and send off the data to be verified
         // setup claimer
         const claimerMnemonic = store.get(this.props.storage.users)[this.props.selected.selectedClaimer].mnemonic
 
@@ -191,7 +191,7 @@ class Claims extends React.Component {
     render() {
         const claims = this.state.claims.map((claim, index) => <Claim key={index} index={index}
             item={claim} handleRemove={this.handleRemove} handleAttest={this.handleAttest}
-            handleValidationRequest={() => this.handleValidationRequest(index)}
+            handleValidationRequest={() => this.handlererVerificationRequest(index)}
         />)
         return (
             <div>

@@ -48,9 +48,9 @@ class Identeties extends React.Component {
         })
     }
 
-    handleRemove(key) {
+    handleRemove(index) {
         var ids = store.get(this.props.storageLocation)
-        ids.splice(key, 1)
+        ids.splice(index, 1)
         store.set(this.props.storageLocation, ids)
         this.setState(prevState => {
             return {
